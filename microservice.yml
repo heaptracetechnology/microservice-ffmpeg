@@ -1,0 +1,83 @@
+omg: 1
+lifecycle:
+  startup:
+    command: ["microservice-ffmpeg"]
+info:
+  version: 1.0.0
+  title: FFmpeg
+  description: This is a ffmpeg service
+  contact:
+    name: Rohit Shetty
+    url: https://github.com/ht68rohit
+    email: rohits@heaptrace.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT 
+actions:
+  convert_video_to_image:
+    help: Convert video to images
+    http:
+      port: 3000
+      method: post
+      path: /convertvideotoimage
+      contentType: application/json
+    arguments:
+      video_base64:
+        type: string
+        in: requestBody
+        required: true
+        help: The base64 video data
+      video_extension:
+        type: string
+        in: requestBody
+        required: false
+        help: The extension type of video
+      image_extension:
+        type: string
+        in: requestBody
+        required: false
+        help: The extension type of image
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        success:
+          help: The status of operation
+          type: boolean
+        message:
+          help: The message for operation
+          type: string
+        status_code:
+          help: It returns status code
+          type: int
+  watermark:
+    help: Add watermark to video
+    http:
+      port: 3000
+      method: post
+      path: /watermark
+      contentType: application/json
+    arguments:
+      video_base64:
+        type: string
+        in: requestBody
+        required: true
+        help: The base64 video data
+      image_base64:
+        type: string
+        in: requestBody
+        required: false
+        help: The base64 watermark image data
+    output:
+      type: object
+      contentType: application/json
+      properties:
+        success:
+          help: The status of operation
+          type: boolean
+        message:
+          help: The message for operation
+          type: string
+        status_code:
+          help: It returns status code
+          type: int
