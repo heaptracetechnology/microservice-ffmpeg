@@ -62,8 +62,6 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	//os.MkdirAll("../tmp/videos", 0755)
-
 	t := time.Now()
 	filename := "video_" + t.Format("20060102150405") + ".3gp"
 
@@ -71,24 +69,22 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	f, createFileErr := os.Create(filepath)
 	if createFileErr != nil {
-		fmt.Println("createFileErr :::", createFileErr)
+		fmt.Println("createFileErr :", createFileErr)
 		result.WriteErrorResponse(responseWriter, createFileErr)
 		return
 	}
 	defer f.Close()
 
 	if _, err := f.Write(data); err != nil {
-		fmt.Println("write err ::: ", err)
+		fmt.Println("write err : ", err)
 	}
 	if err := f.Sync(); err != nil {
-		fmt.Println("sync err ::: ", err)
+		fmt.Println("sync err : ", err)
 	}
 
 	flag.StringVar(&srcFileName, "src", filepath, "source video")
 	flag.StringVar(&extention, "ext", "png", "destination type, e.g.: png, tiff, whatever encoder you have")
 	flag.Parse()
-
-	//os.MkdirAll("./tmp", 0755)
 
 	inputCtx, err := gmf.NewInputCtx(srcFileName)
 	if err != nil {
@@ -104,7 +100,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	codec, codecErr := gmf.FindEncoder(extention)
 	if codecErr != nil {
-		fmt.Println("codecErr :::", codecErr)
+		fmt.Println("codecErr :", codecErr)
 	}
 
 	cc := gmf.NewCodecCtx(codec)
@@ -130,7 +126,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	icc := srcVideoStream.CodecCtx()
 	if swsctx, err = gmf.NewSwsCtx(icc.Width(), icc.Height(), icc.PixFmt(), cc.Width(), cc.Height(), cc.PixFmt(), gmf.SWS_BICUBIC); err != nil {
-		fmt.Println("err ::: ", err)
+		fmt.Println("err : ", err)
 	}
 	defer swsctx.Free()
 
@@ -177,7 +173,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		}
 
 		if frames, err = gmf.DefaultRescaler(swsctx, frames); err != nil {
-			fmt.Println("framesErr :::", err)
+			fmt.Println("framesErr :", err)
 		}
 
 		encode(cc, frames, drain)
@@ -210,7 +206,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		return nil
 	})
 	if errs != nil {
-		fmt.Println("errs ::: ", errs)
+		fmt.Println("errs : ", errs)
 	}
 
 	m := make(map[string][]string)
