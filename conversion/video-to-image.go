@@ -1,6 +1,7 @@
 package conversion
 
 import (
+	"bufio"
 	"encoding/base64"
 	"encoding/json"
 	"flag"
@@ -13,6 +14,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	fp "path/filepath"
 	"strconv"
 	"time"
 )
@@ -32,9 +34,9 @@ type ArgumentData struct {
 }
 
 type Message struct {
-	Success    string `json:"success"`
-	Message    string `json:"message"`
-	StatusCode int    `json:"statuscode"`
+	Success    string      `json:"success"`
+	Message    interface{} `json:"message"`
+	StatusCode int         `json:"statuscode"`
 }
 
 //Convert video to images
@@ -59,27 +61,34 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		result.WriteErrorResponse(responseWriter, decodeErr)
 		return
 	}
-	filename := time.Now().String() + ".3gp"
-	filepath := os.TempDir() + "/" + filename
+
+	//os.MkdirAll("../tmp/videos", 0755)
+
+	t := time.Now()
+	filename := "video_" + t.Format("20060102150405") + ".3gp"
+
+	filepath := "./tmp/videos" + "/" + filename
+
 	f, createFileErr := os.Create(filepath)
 	if createFileErr != nil {
+		fmt.Println("createFileErr :::", createFileErr)
 		result.WriteErrorResponse(responseWriter, createFileErr)
 		return
 	}
 	defer f.Close()
 
 	if _, err := f.Write(data); err != nil {
-		panic(err)
+		fmt.Println("write err ::: ", err)
 	}
 	if err := f.Sync(); err != nil {
-		panic(err)
+		fmt.Println("sync err ::: ", err)
 	}
 
-	flag.StringVar(&srcFileName, "src", filename, "source video")
-	flag.StringVar(&extention, "ext", "png", "destination type, e.g.: png, jpg, tiff, whatever encoder you have")
+	flag.StringVar(&srcFileName, "src", filepath, "source video")
+	flag.StringVar(&extention, "ext", "png", "destination type, e.g.: png, tiff, whatever encoder you have")
 	flag.Parse()
 
-	os.MkdirAll("./tmp", 0755)
+	//os.MkdirAll("./tmp", 0755)
 
 	inputCtx, err := gmf.NewInputCtx(srcFileName)
 	if err != nil {
@@ -93,9 +102,9 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	codec, err := gmf.FindEncoder(extention)
-	if err != nil {
-		log.Fatalf("%s\n", err)
+	codec, codecErr := gmf.FindEncoder(extention)
+	if codecErr != nil {
+		fmt.Println("codecErr :::", codecErr)
 	}
 
 	cc := gmf.NewCodecCtx(codec)
@@ -121,12 +130,12 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	icc := srcVideoStream.CodecCtx()
 	if swsctx, err = gmf.NewSwsCtx(icc.Width(), icc.Height(), icc.PixFmt(), cc.Width(), cc.Height(), cc.PixFmt(), gmf.SWS_BICUBIC); err != nil {
-		panic(err)
+		fmt.Println("err ::: ", err)
 	}
 	defer swsctx.Free()
 
 	ln := int(math.Log10(float64(ist.NbFrames()))) + 1
-	format = "./tmp/" + "%0" + strconv.Itoa(ln) + "d." + extention
+	format = "./tmp/images/" + "%0" + strconv.Itoa(ln) + "d." + extention
 
 	start := time.Now()
 
@@ -168,7 +177,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 		}
 
 		if frames, err = gmf.DefaultRescaler(swsctx, frames); err != nil {
-			panic(err)
+			fmt.Println("framesErr :::", err)
 		}
 
 		encode(cc, frames, drain)
@@ -193,7 +202,32 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 	since := time.Since(start)
 	log.Printf("Finished in %v, avg %.2f fps", since, float64(frameCount)/since.Seconds())
 
-	message := Message{"true", "Converted video to images", http.StatusOK}
+	var files []string
+
+	root := "./tmp/images"
+	errs := fp.Walk(root, func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if errs != nil {
+		fmt.Println("errs ::: ", errs)
+	}
+
+	m := make(map[string][]string)
+
+	for _, file := range files {
+		f, _ := os.Open(file)
+
+		// Read entire JPG into byte slice.
+		reader := bufio.NewReader(f)
+		content, _ := ioutil.ReadAll(reader)
+
+		encoded := base64.StdEncoding.EncodeToString(content)
+		m[file] = append(m[file], encoded)
+
+	}
+
+	message := Message{"true", m, http.StatusOK}
 	bytes, _ := json.Marshal(message)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 

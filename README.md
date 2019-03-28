@@ -27,7 +27,7 @@ omg build
 
 ##### Convert Video to Image
 ```sh
-$ omg run convert_video_to_image -a video_base64=<BASE64_DATA> -a video_extension=<VIDEO_EXTENSION> -a image_extension=<IMAGE_EXTENSION>
+$ omg run convert_video_to_image -a video_base64=<BASE64_DATA>
 ```
 
 ## License

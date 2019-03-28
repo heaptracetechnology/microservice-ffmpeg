@@ -27,16 +27,6 @@ actions:
         in: requestBody
         required: true
         help: The base64 video data
-      video_extension:
-        type: string
-        in: requestBody
-        required: false
-        help: The extension type of video
-      image_extension:
-        type: string
-        in: requestBody
-        required: false
-        help: The extension type of image
     output:
       type: object
       contentType: application/json
@@ -44,9 +34,9 @@ actions:
         success:
           help: The status of operation
           type: boolean
-        message:
-          help: The message for operation
-          type: string
+        images_base64:
+          help: The base64 data of all images
+          type: object
         status_code:
           help: It returns status code
           type: int
