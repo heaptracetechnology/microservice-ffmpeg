@@ -1,44 +1,29 @@
-# FFmpeg as a microservice
+# _FFmpeg_ as a microservice
+
 An OMG service for FFmpeg, it allows encode/decode, converts audio or video formats. It can also capture and encode in real-time from various hardware and software sources 
 
-[![Open Microservice Guide](https://img.shields.io/badge/OMG-enabled-brightgreen.svg?style=for-the-badge)](https://microservice.guide)
-<!-- [![Build Status](https://travis-ci.com/heaptracetechnology/microservice-urbanairship.svg?branch=master)](https://travis-ci.com/heaptracetechnology/microservice-urbanairship)
-[![codecov](https://codecov.io/gh/heaptracetechnology/microservice-urbanairship/branch/master/graph/badge.svg)](https://codecov.io/gh/heaptracetechnology/microservice-urbanairship)
-[![GolangCI](https://golangci.com/badges/github.com/golangci/golangci-web.svg)](https://golangci.com) -->
+[![Open Microservice Guide](https://img.shields.io/badge/OMG%20Enabled-👍-green.svg?)](https://microservice.guide)
 
-
-## [OMG](hhttps://microservice.guide) CLI
-
-### OMG
-
-* omg validate
-```
-omg validate
-```
-* omg build
-```
-omg build
-```
-### Test Service
-
-* Test the service by following OMG commands
-
-### CLI
+## Direct usage in [Storyscript](https://storyscript.io/):
 
 ##### Convert Video to Image
-```sh
-$ omg run convert_video_to_image -a video_base64=<BASE64_DATA>
+```coffee
+>>> ffmpeg convertVideoToImage videoBase64:'Base64 data'
+
 ```
+
+Curious to [learn more](https://docs.storyscript.io/)?
+
+✨🍰✨
+
+## Usage with [OMG CLI](https://www.npmjs.com/package/omg)
+
+##### Convert Video to Image
+```shell
+$ omg run convertVideoToImage -a videoBase64=<BASE64_DATA>
+```
+
+**Note**: The OMG CLI requires [Docker](https://docs.docker.com/install/) to be installed.
 
 ## License
-### [MIT](https://choosealicense.com/licenses/mit/)
-
-## Docker
-### Build
-```
-docker build -t microservice-ffmpeg .
-```
-### RUN
-```
-docker run -p 3000:3000 microservice-ffmpeg
-```
+[MIT License](https://github.com/omg-services/ffmpeg/blob/master/LICENSE).
