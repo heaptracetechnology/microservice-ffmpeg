@@ -9,7 +9,7 @@ An OMG service for FFmpeg, it allows encode/decode, converts audio or video form
 ##### Convert Video to Image
 ```coffee
 >>> ffmpeg convertVideoToImage videoBase64:'Base64 data'
-
+{"success":"true/false","imagesBase64":"List of base64 images","statusCode":"HTTPstatusCode"}
 ```
 
 Curious to [learn more](https://docs.storyscript.io/)?

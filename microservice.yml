@@ -14,7 +14,7 @@ info:
     name: MIT
     url: https://opensource.org/licenses/MIT 
 actions:
-  convert_video_to_image:
+  convertVideoToImage:
     help: Convert video to images
     http:
       port: 3000
@@ -22,7 +22,7 @@ actions:
       path: /convertvideotoimage
       contentType: application/json
     arguments:
-      video_base64:
+      videoBase64:
         type: string
         in: requestBody
         required: true
@@ -34,10 +34,10 @@ actions:
         success:
           help: The status of operation
           type: boolean
-        images_base64:
+        imagesBase64:
           help: The base64 data of all images
           type: object
-        status_code:
+        statusCode:
           help: It returns status code
           type: int
   watermark:
@@ -48,12 +48,12 @@ actions:
       path: /watermark
       contentType: application/json
     arguments:
-      video_base64:
+      videoBase64:
         type: string
         in: requestBody
         required: true
         help: The base64 video data
-      image_base64:
+      imageBase64:
         type: string
         in: requestBody
         required: false
@@ -68,6 +68,6 @@ actions:
         message:
           help: The message for operation
           type: string
-        status_code:
+        statusCode:
           help: It returns status code
           type: int

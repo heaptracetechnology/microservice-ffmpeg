@@ -28,15 +28,21 @@ var (
 )
 
 type ArgumentData struct {
-	VideoBase64     string `json:"video_base64"`
-	InputExtension  string `json:"input_extension"`
-	OutputExtension string `json:"output_extension"`
+	VideoBase64     string `json:"videoBase64"`
+	InputExtension  string `json:"inputExtension"`
+	OutputExtension string `json:"outputExtension"`
 }
 
 type Message struct {
 	Success    string      `json:"success"`
 	Message    interface{} `json:"message"`
-	StatusCode int         `json:"statuscode"`
+	StatusCode int         `json:"statusCode"`
+}
+
+type OutputMessage struct {
+	Success      string      `json:"success"`
+	ImagesBase64 interface{} `json:"imagesBase64"`
+	StatusCode   int         `json:"statusCode"`
 }
 
 //Convert video to images
@@ -223,7 +229,7 @@ func VideoToImage(responseWriter http.ResponseWriter, request *http.Request) {
 
 	}
 
-	message := Message{"true", m, http.StatusOK}
+	message := OutputMessage{"true", m, http.StatusOK}
 	bytes, _ := json.Marshal(message)
 	result.WriteJsonResponse(responseWriter, bytes, http.StatusOK)
 
