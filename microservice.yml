@@ -30,16 +30,6 @@ actions:
     output:
       type: object
       contentType: application/json
-      properties:
-        success:
-          help: The status of operation
-          type: boolean
-        imagesBase64:
-          help: The base64 data of all images
-          type: object
-        statusCode:
-          help: It returns status code
-          type: int
   watermark:
     help: Add watermark to video
     http:
@@ -61,13 +51,3 @@ actions:
     output:
       type: object
       contentType: application/json
-      properties:
-        success:
-          help: The status of operation
-          type: boolean
-        message:
-          help: The message for operation
-          type: string
-        statusCode:
-          help: It returns status code
-          type: int
